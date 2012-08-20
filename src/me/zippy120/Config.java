@@ -28,7 +28,7 @@ public class Config {
 		config.addDefault("Error.NumberNotSet", "The numbers in the config are not set. Defaulting to 1000...");
 		config.addDefault("Error.ConsoleSender", "You must be a player to execute this command.");
 		config.addDefault("RandomPlacer.Teleported", "You are now at {x}, {z}");
-		config.addDefault("Error.Cooldown", "You must wait for randomplacer to cooldown! ({cooldown} seconds left)");
+		config.addDefault("Error.Cooldown", "You must wait for randomplacer to cooldown! ({cooldown} second{s} left)");
 		config.addDefault("RandomPlacer.cooldown", 5);
 		config.options().copyDefaults(true);
 		plugin.saveConfig();

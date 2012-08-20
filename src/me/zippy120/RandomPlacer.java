@@ -19,9 +19,10 @@ public class RandomPlacer extends JavaPlugin {
 	Random r = new Random();
 	Map<Player, Long> Cooldown = new HashMap<Player, Long>();
 	FileConfiguration config;
-	
+	/**
+	 * 
+	 */
 	public void onEnable(){
-		
 		log = this.getLogger();
 		log.info("RandomPlacer has been enabled!");
 		log.info("Loading config...");
@@ -29,16 +30,27 @@ public class RandomPlacer extends JavaPlugin {
 		this.config = config.getConfig();
 		
 	}
- 
+	/**
+	 * 
+	 */
 	public void onDisable(){
 		log.info("RandomPlacer has been disabled.");
 	}
-	 
+	 /**
+	  * 
+	  */
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		
 	if ((sender instanceof Player)) {
 		Player player = (Player) sender;
 			if(cmd.getName().equalsIgnoreCase("tpr")){
+				if(args.length == 1)
+					if(args[0].equalsIgnoreCase("reload")){
+						Config config = new Config(this);
+						this.config = config.getConfig();
+						player.sendMessage(pMsg( "Config Reloaded."));
+						return true;
+					}
 				if ((!(Cooldown.containsKey(player))) || (Cooldown.containsKey(player) && Cooldown.get(player) <= ((System.currentTimeMillis())))){
 					int xlimit;
 					int zlimit;
@@ -61,13 +73,39 @@ public class RandomPlacer extends JavaPlugin {
 					Location l = new Location(player.getWorld(), x, y + 2, z);
 					Cooldown.put(player, System.currentTimeMillis() + (config.getInt("RandomPlacer.cooldown") * 1000));
 					player.teleport(l);
-					player.sendMessage(ChatColor.GOLD + "[RandomPlacer]: " + ChatColor.YELLOW + config.getString("RandomPlacer.Teleported").replace("{x}", x + "").replace("{z}", z+ ""));
+					player.sendMessage( pMsg(config.getString("RandomPlacer.Teleported").replace("{x}", x + "").replace("{z}", z+ "")));
 			} else {
-				player.sendMessage(ChatColor.GOLD + "[RandomPlacer]: " + ChatColor.RED + config.getString("Error.Cooldown").replace("{cooldown}", "" + ((Cooldown.get(player) - System.currentTimeMillis()) / 1000)));
+				player.sendMessage( pErr(config.getString("Error.Cooldown").replace("{cooldown}", getNextUseTime(player) + "").replace("{s}", getNextUseTime(player) == 1 ? "" : "s")));
 			}
 			}
 				} else log.info(config.getString("Error.ConsoleSender"));
 	return true;
+	}
+	
+	/**
+	 * 
+	 * @param player
+	 * @return
+	 */
+	private int getNextUseTime(Player player) {
+		return (int) ((Cooldown.get(player) - System.currentTimeMillis()) / 1000);
+	}
+	/**
+	 * 
+	 * @param message
+	 * @return
+	 */
+	public String pMsg(String message){
+		return ChatColor.GOLD + "[RandomPlacer]: " + ChatColor.YELLOW + message;
+	}
+	
+	/**
+	 * 
+	 * @param message
+	 * @return
+	 */
+	public String pErr(String message){
+		return ChatColor.GOLD + "[RandomPlacer]: " + ChatColor.RED + message;
 	}
 	
 }
