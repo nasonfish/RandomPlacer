@@ -1,48 +1,37 @@
 package me.zippy120;
 
+import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
+
+	FileConfiguration config;
+	File configFile = null;
 	
-	protected RandomPlacer plugin;
+	private static RandomPlacer plugin;
 	
 	
-	/**
-	 * 
-	 * @param plugin
-	 */
-	public Config( RandomPlacer plugin ) {
-		this.plugin = plugin;
+	public Config(RandomPlacer plugin){
+		Config.plugin = plugin;
+		config = plugin.getConfig();
 	}
 	
 	
-	/**
-	 * 
-	 * @param plugin
-	 */
-	public FileConfiguration getConfig(){
-		
+	public FileConfiguration getConfig() {
 		FileConfiguration config = plugin.getConfig();
-		
-		// set defaults
-		config.addDefault("limit.x", 500);
-		config.addDefault("limit.y", 500);
-		config.addDefault("limit.nx", -500);
-		config.addDefault("limit.ny", -500);
+		config.addDefault("RandomPlacer.limit.x", 500);
+		config.addDefault("RandomPlacer.limit.z", 500);
+		config.addDefault("RandomPlacer.limit.nx", -500);
+		config.addDefault("RandomPlacer.limit.nz", -500);
 		config.addDefault("Error.NumberConflict", "The numbers set in the config do not work. Setting to 1000...");
 		config.addDefault("Error.NNumberNotSet", "The negative numbers in the config are not set. Defaulting to -1000...");
 		config.addDefault("Error.NumberNotSet", "The numbers in the config are not set. Defaulting to 1000...");
 		config.addDefault("Error.ConsoleSender", "You must be a player to execute this command.");
-		config.addDefault("RandomPlacer.Teleported", "You are now at ");
-		config.addDefault("RandomPlacer.Cooldown", 20);
-		
-		// Copy defaults
+		config.addDefault("RandomPlacer.Teleported", "You are now at {x}, {z}");
+		config.addDefault("Error.Cooldown", "You must wait for randomplacer to cooldown! ({cooldown} seconds left)");
+		config.addDefault("RandomPlacer.cooldown", 5);
 		config.options().copyDefaults(true);
-		
-		// save the defaults/config
 		plugin.saveConfig();
-		
 		return config;
-		
 	}
 }
