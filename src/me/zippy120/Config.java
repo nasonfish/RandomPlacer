@@ -30,6 +30,10 @@ public class Config {
 		config.addDefault("RandomPlacer.Teleported", "You are now at {x}, {z}");
 		config.addDefault("Error.Cooldown", "You must wait for randomplacer to cooldown! ({cooldown} second{s} left)");
 		config.addDefault("RandomPlacer.cooldown", 5);
+		config.addDefault("RandomPlacer.world", "all");
+		config.addDefault("RandomPlacer.comment", "Change the world value if you " +
+				"only want it to teleport you to a certain world. You can also add" +
+				" RandomPlacer.worldname.limit.x/z/nx/nz for world-specific limits.");
 		config.options().copyDefaults(true);
 		plugin.saveConfig();
 		return config;

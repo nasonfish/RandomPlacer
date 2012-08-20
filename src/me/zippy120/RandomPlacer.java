@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,6 +41,7 @@ public class RandomPlacer extends JavaPlugin {
 	  * 
 	  */
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+		//TODO CLEAN THIS UP!!!!!!!
 		
 	if ((sender instanceof Player)) {
 		Player player = (Player) sender;
@@ -52,14 +54,18 @@ public class RandomPlacer extends JavaPlugin {
 						return true;
 					}
 				if ((!(Cooldown.containsKey(player))) || (Cooldown.containsKey(player) && Cooldown.get(player) <= ((System.currentTimeMillis())))){
-					int xlimit;
-					int zlimit;
-					int nxlimit;
-					int nzlimit;
-					xlimit = config.getInt("RandomPlacer.limit.x");					
-					zlimit = config.getInt("RandomPlacer.limit.z");
-					nxlimit = config.getInt("RandomPlacer.limit.nx");					
-					nzlimit = config.getInt("RandomPlacer.limit.nz");
+					int xlimit = config.getInt("RandomPlacer.limit.x");
+					int zlimit = config.getInt("RandomPlacer.limit.z");
+					int nxlimit = config.getInt("RandomPlacer.limit.nx");
+					int nzlimit = config.getInt("RandomPlacer.limit.nz");
+					if(config.isSet("RandomPlacer."+player.getWorld().getName()+"limit.x"))
+						xlimit = config.getInt("RandomPlacer."+player.getWorld().getName()+"limit.x");
+					if(config.isSet("RandomPlacer."+player.getWorld().getName()+"limit.z"))
+						zlimit = config.getInt("RandomPlacer."+player.getWorld().getName()+"limit.z");
+					if(config.isSet("RandomPlacer."+player.getWorld().getName()+"limit.nx"))
+						nxlimit = config.getInt("RandomPlacer."+player.getWorld().getName()+"limit.nx");
+					if(config.isSet("RandomPlacer."+player.getWorld().getName()+"limit.nz"))
+						nzlimit = config.getInt("RandomPlacer."+player.getWorld().getName()+"limit.nz");
 					if (nxlimit > xlimit || nzlimit > zlimit){
 						log.info(config.getString("Error.NumberConflict"));
 						xlimit = 1000;
@@ -70,7 +76,17 @@ public class RandomPlacer extends JavaPlugin {
 					int x = r.nextInt(xlimit - nxlimit + 1) + nxlimit;
 					int z = r.nextInt(zlimit - nzlimit + 1) + nzlimit;
 					int y = player.getWorld().getHighestBlockYAt(x, z);
-					Location l = new Location(player.getWorld(), x, y + 2, z);
+					World world = player.getWorld();
+					if(config.getString("RandomPlacer.world") != "all"){
+						String wName = config.getString("RandomPlacer.world");
+						for(World w : this.getServer().getWorlds()){
+							if (w.getName().equalsIgnoreCase(wName)){
+								world = w;
+								break;
+							}
+						}
+					}
+					Location l = new Location(world, x, y + 2, z);
 					Cooldown.put(player, System.currentTimeMillis() + (config.getInt("RandomPlacer.cooldown") * 1000));
 					player.teleport(l);
 					player.sendMessage( pMsg(config.getString("RandomPlacer.Teleported").replace("{x}", x + "").replace("{z}", z+ "")));
