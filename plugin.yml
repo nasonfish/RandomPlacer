@@ -1,15 +1,15 @@
 name: RandomPlacer
-version: 1.1.2
-main: me.zippy120.RandomPlacer
+version: 2.0
+main: com.nasonfish.randomplacer.RandomPlacer
 
 commands:
   tpr: 
     description: Teleports you to a random location
-    permission: RandomPlacer
+    permission: RandomPlacer.use
     alaises: tprandom 
     usage: /tpr
     
 permissions: 
-  RandomPlacer:
+  RandomPlacer.use:
     default: true
     
